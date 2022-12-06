@@ -1,8 +1,5 @@
-import urllib.request
-import argparse
-import datetime
-import os
-import shutil
+import urllib.request, argparse, datetime, os, shutil
+from sys import exit
 
 def fetch_current_year():
     currentDateTime = datetime.datetime.now()
@@ -51,8 +48,13 @@ def script_argument_parser(year):
         cookie = check_cookie_existence()
     else:
         cookie = "session={}".format(inputted_cookie)
-    if day is None:
-        day = input("Input requested day: ")
+    while day is None or not day:
+        try:
+            day = int(input("Input requested day: "))
+            if not day in range(1, 25):
+                print("Enter an integer between 1 and  25.")
+        except ValueError:
+            exit("Enter an integer between 1 and  25.")
     return year, day, cookie
 
 def fetch_aoc_data(script_arguments):
@@ -67,7 +69,7 @@ def fetch_aoc_data(script_arguments):
         return http_result
     except urllib.error.HTTPError as http_error:
         print(http_error)
-        print("Did you enter a valid cookie or set a valid AOC_COOKIE environment variable?")
+        exit("Did you enter a valid cookie or set a valid AOC_COOKIE environment variable?")
 
 class output_definer:
     def write_data_to_file(aoc_data, day):
@@ -103,7 +105,7 @@ class output_definer:
             os.mkdir(project_folder)
 
     def passthrough_data(aoc_data):
-        pass
+        return aoc_data
 
 def check_cookie_existence():
     env_vars = os.environ
@@ -116,7 +118,7 @@ def check_cookie_existence():
     return cookie
 
 def set_cookie_environment_variable(cookie):
-    while cookie is None:
+    while cookie is None or not cookie:
         cookie = input("Enter session cookie: ")
     if cookie:
         session_cookie = "session={}".format(cookie)
@@ -124,7 +126,7 @@ def set_cookie_environment_variable(cookie):
         set_cookie = os.environ['AOC_COOKIE']
         return set_cookie
     else:
-        print("Something went wrong.")
+        exit("Something went wrong.")
 
 def main():
     current_year = fetch_current_year()
