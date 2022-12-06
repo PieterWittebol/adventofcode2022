@@ -71,18 +71,36 @@ def fetch_aoc_data(script_arguments):
 
 class output_definer:
     def write_data_to_file(aoc_data, day):
+        if aoc_data.endswith('\n'):
+            print("Removing trailing newline.")
+            aoc_data = aoc_data[:-1]
         folder_name = "Day {}".format(day)
         project_folder = os.path.join(os.curdir, folder_name)
         folder_exists_check = os.path.exists(project_folder)
+        input_file_write_location = os.path.join(project_folder, "input_data.txt")
+        input_file_exists_check = os.path.isfile(input_file_write_location)
+        solution_file_write_location = os.path.join(os.curdir, 'templates', 'Solution.py')
+        solution_file_exists_check = os.path.isfile(solution_file_write_location)
+
+        def write_input_file():
+            write_to_input_file = open(input_file_write_location, 'w')
+            write_to_input_file.write(aoc_data)
+            write_to_input_file.close()
+
+        def write_solution_file():
+            shutil.copy(solution_file_write_location, project_folder)
+
         if folder_exists_check:
-            pass
+            if input_file_exists_check:
+                overwrite_input_file = str(input("Overwrite input file? y/(n): ") or 'n')
+                if overwrite_input_file == 'y':
+                    write_input_file()
+            if solution_file_exists_check:
+                overwrite_solution_file = str(input("Overwrite solution file? y/(n): ") or 'n')
+                if overwrite_solution_file == 'y':
+                    write_solution_file()
         elif not folder_exists_check:
             os.mkdir(project_folder)
-        input_file_write_location = os.path.join(project_folder, "input_data.txt")
-        write_to_input_file = open(input_file_write_location, 'w')
-        write_to_input_file.write(aoc_data)
-        write_to_input_file.close()
-        shutil.copy(os.path.join(os.curdir, 'templates', 'Solution.py'), project_folder)
 
     def passthrough_data(aoc_data):
         pass
