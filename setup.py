@@ -2,6 +2,7 @@ import urllib.request
 import argparse
 import datetime
 import os
+import shutil
 
 def fetch_current_year():
     currentDateTime = datetime.datetime.now()
@@ -81,10 +82,7 @@ class output_definer:
         write_to_input_file = open(input_file_write_location, 'w')
         write_to_input_file.write(aoc_data)
         write_to_input_file.close()
-        solution_file_write_location = os.path.join(project_folder, "Solution.py")
-        write_to_solution_file = open(solution_file_write_location, 'w')
-        write_to_solution_file.write(aoc_data)
-        write_to_solution_file.close()
+        shutil.copy(os.path.join(os.curdir, 'templates', 'Solution.py'), project_folder)
 
     def passthrough_data(aoc_data):
         pass

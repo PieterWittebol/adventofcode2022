@@ -8,6 +8,7 @@ compartment_items = []
 duplicate_items = []
 priority_list = []
 badge_groups = []
+common_items_per_badge_group = []
 
 def read_input():
     read_input_file = open(input_file, 'r')
@@ -16,32 +17,13 @@ def read_input():
     return input_values
 
 def define_badge_groups(input_values):
-    line_count = 0
     badge_group = ()
     for line in input_values:
-        line_count += 1
-        print(line)
-        if line_count <= 3:
-            print(f"Line count is smmaller than 3: {line_count}")
-            badge_group = badge_group + (line, )
-            continue
-        else:
-            print("Line count is bigger than 3")
-            print(badge_group)
+        badge_group = badge_group + (line, )
+        if len(badge_group) == 3:
+            badge_groups.append(badge_group)
             badge_group = ()
-            line_count = 0
-            
-"""     while line_count < 3:
-        for line in input_values:
-            print(line)
-            print(line_count)
-            badge_group = badge_group + (line, )
-        line_count += 1
-    else:
-        badge_groups.append(badge_group)
-        line_count = 0
-        badge_group = ()
-    return badge_groups """
+    return badge_groups
 
 def split_compartments(input_values):
     for line in input_values:
@@ -72,6 +54,7 @@ def compare_compartments(compartment_item_lists):
 
 def priority_definer(duplicate_items):
     sum_item_priorities = 0
+    priority_list = []
     for duplicate_item in duplicate_items:
         for character in duplicate_item:
             if character.isupper():
@@ -82,16 +65,24 @@ def priority_definer(duplicate_items):
         sum_item_priorities = sum_item_priorities + priority_list[priority_items]
     return sum_item_priorities
 
+def common_between_elves(badge_groups):
+    for badge_group in badge_groups:
+        elf_1, elf_2, elf_3 = badge_group
+        common_items_per_badge_group.append(set(elf_1) & set(elf_2) & set(elf_3))
+    return common_items_per_badge_group
+
 def puzzle_1(read_input_data):
     all_rugsack_contents = split_compartments(read_input_data)
     all_rugsack_compartments_items = items_compartments(all_rugsack_contents)
     compartment_duplicate_items = compare_compartments(all_rugsack_compartments_items)
     puzzle_1_priority_sum = priority_definer(compartment_duplicate_items)
-    print(f"Puzzle 1\nThe total sum of priority item types: {puzzle_1_priority_sum}")
+    print(f"Puzzle 1\nThe total sum of priority item types: {puzzle_1_priority_sum}\n")
 
 def puzzle_2(read_input_data):
     elf_groups = define_badge_groups(read_input_data)
-    print(elf_groups)
+    common_items = common_between_elves(elf_groups)
+    puzzle_2_priority_sum = priority_definer(common_items)
+    print(f"Puzzle 2\nThe total sum of priority items per badge group: {puzzle_2_priority_sum}")
 
 def main():
     read_input_data = read_input()
