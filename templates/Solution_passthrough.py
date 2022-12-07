@@ -1,11 +1,12 @@
-input_file = 'input_data.txt'
+import setup
 
+day = 0
+passthrough = True
 
 def read_input():
-    read_input_file = open(input_file, 'r')
-    read_input_file_data = read_input_file.read()
-    input_values = read_input_file_data.split("\n")
-    return input_values
+    aoc_data = setup.main(passthrough, day)
+    input_data = aoc_data.read().split('\n')
+    return input_data
 
 def puzzle_1(input_data):
     pass
