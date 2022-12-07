@@ -1,6 +1,3 @@
-import os
-
-
 input_file = 'input_data.txt'
 input_file_to_list = []
 rugsack_comp_list = []
